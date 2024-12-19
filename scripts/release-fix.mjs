@@ -1,12 +1,18 @@
 import { execSync } from 'child_process';
 import fs, { writeFileSync } from 'fs';
 import pkg from '../package.json' with { type: 'json' };
+import pkg_primevue from '../packages/primevue/package.json' with { type: 'json' };
 
 let newVersion = execSync('npm version patch --no-git-tag-version', { encoding: 'utf-8' });
 
 console.debug(`newVersion :>> `, newVersion);
 
-newVersion = newVersion.replace(/^v/, '').trim() + '-temp-fix';
+newVersion = newVersion.replace(/^v/, '').trim();
+newVersion += '-fix';
+newVersion += `.${new Date()
+    .toISOString()
+    .replace(/[^0-9]/g, '')
+    .substring(0, 12)}`;
 const tgzName = `primevue-${newVersion}.tgz`;
 
 console.debug(`newVersion :>> `, newVersion);
@@ -33,6 +39,9 @@ function publish() {
 }
 
 function pack() {
+    delete pkg_primevue.dependencies;
+    writeFileSync('packages/primevue/dist/package.json', JSON.stringify(pkg_primevue, null, 2));
+
     // https://nexus.oo1.dev/#browse/upload:npm-hosted
 
     let packCommand = `npm pack`;
