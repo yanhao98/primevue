@@ -3,6 +3,9 @@ import fs, { writeFileSync } from 'fs';
 import pkg from '../package.json' with { type: 'json' };
 import pkg_primevue from '../packages/primevue/package.json' with { type: 'json' };
 
+delete pkg_primevue.dependencies;
+writeFileSync('../packages/primevue/dist/package.json', JSON.stringify(pkg_primevue, null, 2));
+
 let newVersion = execSync('npm version patch --no-git-tag-version', { encoding: 'utf-8' });
 
 console.debug(`newVersion :>> `, newVersion);
@@ -39,11 +42,6 @@ function publish() {
 }
 
 function pack() {
-    delete pkg_primevue.dependencies;
-    writeFileSync('packages/primevue/dist/package.json', JSON.stringify(pkg_primevue, null, 2));
-
-    // https://nexus.oo1.dev/#browse/upload:npm-hosted
-
     let packCommand = `npm pack`;
 
     console.debug(`packCommand :>> `, packCommand);
@@ -69,6 +67,7 @@ function upload() {
     fetch('https://nexus.oo1.dev/service/rest/v1/components?repository=npm-hosted', requestOptions).then((response) => console.debug(`response :>> `, response));
 }
 
+// https://nexus.oo1.dev/service/rest/repository/browse/npm-hosted/
 function list() {
     fetch('https://nexus.oo1.dev/service/rest/v1/components?repository=npm-hosted', {
         method: 'GET'
