@@ -1,0 +1,22 @@
+# act --job publish-nexus -W .gitea/workflows/nexus.yaml
+name: 发布到 Nexus 仓库
+on:
+    push:
+        branches:
+            - primevue-fix
+defaults:
+    run:
+        shell: bash
+jobs:
+    publish-nexus:
+        name: 发布包到 Nexus
+        runs-on: ubuntu-latest
+        steps:
+            - uses: yanhao98/composite-actions/npm-build-fix-to-nexus@main
+              with:
+                  package_json_url: 'https://www.unpkg.com/primevue/package.json'
+                  pack_workspace: 'packages/primevue/dist'
+                  build_command: 'pnpm --filter primevue build'
+                  nexus_post_url: 'https://nexus.oo1.dev/service/rest/v1/components?repository=npm-hosted'
+                  nexus_auth: ${{ secrets.NEXUS_AUTH }}
+            - run: echo "DONE"
