@@ -1,10 +1,6 @@
 import { execSync } from 'child_process';
 import fs, { writeFileSync } from 'fs';
 import pkg from '../package.json' with { type: 'json' };
-import pkg_primevue from '../packages/primevue/package.json' with { type: 'json' };
-
-delete pkg_primevue.dependencies;
-writeFileSync('packages/primevue/package.json', JSON.stringify(pkg_primevue, null, 2));
 
 let newVersion = execSync('npm version patch --no-git-tag-version', { encoding: 'utf-8' });
 
@@ -42,6 +38,49 @@ function publish() {
 }
 
 function pack() {
+    writeFileSync(
+        'packages/primevue/dist/package.json',
+        JSON.stringify(
+            {
+                name: 'primevue',
+                version: `${newVersion}`,
+                sideEffects: ['*.vue'],
+                main: './index.mjs',
+                module: './index.mjs',
+                types: './index.d.ts',
+                unpkg: 'umd/primevue.min.js',
+                jsdelivr: 'umd/primevue.min.js',
+                'web-types': './web-types.json',
+                vetur: {
+                    tags: './vetur-tags.json',
+                    attributes: './vetur-attributes.json'
+                },
+                exports: {
+                    '.': {
+                        types: './index.d.ts',
+                        import: './index.mjs',
+                        default: './index.mjs'
+                    },
+                    './*': {
+                        types: './*/index.d.ts',
+                        import: './*/index.mjs',
+                        default: './*/index.mjs'
+                    }
+                },
+                dependencies: {
+                    '@primeuix/styled': '^0.3.2',
+                    '@primeuix/utils': '^0.3.2',
+                    '@primevue/core': '4.2.5',
+                    '@primevue/icons': '4.2.5'
+                },
+                engines: {
+                    node: '>=12.11.0'
+                }
+            },
+            null,
+            2
+        )
+    );
     let packCommand = `npm pack`;
 
     console.debug(`packCommand :>> `, packCommand);
