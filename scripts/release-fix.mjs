@@ -4,7 +4,7 @@ import pkg from '../package.json' with { type: 'json' };
 import pkg_primevue from '../packages/primevue/package.json' with { type: 'json' };
 
 delete pkg_primevue.dependencies;
-writeFileSync('../packages/primevue/dist/package.json', JSON.stringify(pkg_primevue, null, 2));
+writeFileSync('packages/primevue/package.json', JSON.stringify(pkg_primevue, null, 2));
 
 let newVersion = execSync('npm version patch --no-git-tag-version', { encoding: 'utf-8' });
 
