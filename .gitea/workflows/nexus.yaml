@@ -1,0 +1,15 @@
+name: Publish to Nexus
+on:
+    push:
+        branches:
+            - primevue-fix
+
+jobs:
+    publish-nexus:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@main
+            - uses: yanhao98/composite-actions/setup-node-environment@main
+            - run: node scripts/release-fix.mjs
+              env:
+                  NEXUS_AUTH: ${{ secrets.NEXUS_AUTH }}  # Basic auth for Nexus
