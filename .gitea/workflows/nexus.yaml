@@ -10,6 +10,8 @@ jobs:
         steps:
             - uses: actions/checkout@main
             - uses: yanhao98/composite-actions/setup-node-environment@main
-            - run: node .gitea/release-fix.mjs
+            - run: node .gitea/cli.mjs build
+            - run: node .gitea/cli.mjs pack
+            - run: node .gitea/cli.mjs upload
               env:
-                  NEXUS_AUTH: ${{ secrets.NEXUS_AUTH }}  # Basic auth for Nexus
+                  NEXUS_AUTH: ${{ secrets.NEXUS_AUTH }} # Basic auth for Nexus

@@ -1,0 +1,48 @@
+import { execSync } from 'child_process';
+import fs from 'fs';
+import { packTgz, patchVersion, uploadTgz } from './utils.mjs';
+
+const packageCwd = process.cwd() + '/packages/primevue';
+
+function build() {
+    let command = 'pnpm --filter primevue build';
+    execSync(command, { stdio: 'inherit' });
+}
+
+async function generateNewJson(pkgFile = `${packageCwd}/package.json`) {
+    execSync(`git checkout ${pkgFile}`, { stdio: 'inherit' });
+    const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf-8'));
+    return {
+        name: pkg.name,
+        version: patchVersion(pkg.version),
+        sideEffects: ['*.vue'],
+        ...{ main: './index.mjs', module: './index.mjs', types: './index.d.ts' },
+        'web-types': './web-types.json',
+        vetur: { tags: './vetur-tags.json', attributes: './vetur-attributes.json' },
+        exports: {
+            '.': { types: './index.d.ts', import: './index.mjs', default: './index.mjs' },
+            './*': { types: './*/index.d.ts', import: './*/index.mjs', default: './*/index.mjs' }
+        },
+        dependencies: {
+            '@primeuix/styled': '^0.3.2',
+            '@primeuix/utils': pkg.version,
+            '@primevue/core': pkg.version,
+            '@primevue/icons': pkg.version
+        }
+    };
+}
+
+const command = process.argv[2];
+switch (command) {
+    case 'build':
+        build();
+        break;
+    case 'pack':
+        packTgz(packageCwd, await generateNewJson());
+        break;
+    case 'upload':
+        uploadTgz(packageCwd, 'npm-hosted');
+        break;
+    default:
+        console.log('Unknown command');
+}
