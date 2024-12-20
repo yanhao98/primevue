@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import { packTgz, patchVersion, uploadTgz } from './utils.mjs';
 
-const packageCwd = process.cwd() + '/packages/primevue';
+const packageCwd = process.cwd() + '/packages/primevue/dist';
 
 function build() {
     let command = 'pnpm --filter primevue build';
@@ -10,7 +10,6 @@ function build() {
 }
 
 async function generateNewJson(pkgFile = `${packageCwd}/package.json`) {
-    execSync(`git checkout ${pkgFile}`, { stdio: 'inherit' });
     const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf-8'));
     return {
         name: pkg.name,

@@ -30,7 +30,9 @@ export async function packTgz(cwd, pkgJson) {
     writeFileSync(pkgFile, JSON.stringify(pkgJson, null, 2));
     const tgz = execSync('npm pack', { cwd, encoding: 'utf-8' });
     console.log('tgz :>> ', `${cwd}/${tgz.trim()}`);
-    execSync(`git checkout ${pkgFile}`, { stdio: 'inherit' });
+    try {
+        execSync(`git checkout ${pkgFile}`, { stdio: 'inherit' });
+    } catch (e) {}
 }
 
 export function uploadTgz(cwd, repository) {
