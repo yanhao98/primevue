@@ -24,10 +24,10 @@ async function generateNewJson(pkgFile = `${packageCwd}/package.json`) {
             './*': { types: './*/index.d.ts', import: './*/index.mjs', default: './*/index.mjs' }
         },
         dependencies: {
-            '@primeuix/styled': '^0.3.2',
-            '@primeuix/utils': pkg.version,
-            '@primevue/core': pkg.version,
-            '@primevue/icons': pkg.version
+            '@primeuix/styled': '*',
+            '@primeuix/utils': '*',
+            '@primevue/core': '*',
+            '@primevue/icons': '*'
         }
     };
 }
