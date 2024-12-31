@@ -14,6 +14,7 @@ const theme = ({ dt }) => `
 
 .p-fileupload-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     padding: ${dt('fileupload.header.padding')};
     background: ${dt('fileupload.header.background')};
