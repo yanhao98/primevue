@@ -584,7 +584,9 @@ export default {
             overlayVisible: false,
             currentView: this.view,
             query: null,
-            queryMatches: false
+            queryMatches: false,
+            selectionStart: null,
+            selectionEnd: null
         };
     },
     watch: {
